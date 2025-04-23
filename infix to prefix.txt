@@ -1,0 +1,96 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<ctype.h>
+#include<string.h>
+#include<math.h>
+#define MAX 100
+
+struct Stack {
+    int arr[MAX];
+    int top;
+};
+
+void initstack(struct Stack **stack) {
+    (*stack)->top = -1;  // Dereference to access the top of the stack
+}
+
+int isempty(struct Stack **stack) {
+    return (*stack)->top == -1;  // Dereference to access the top of the stack
+}
+
+void push(struct Stack **stack, int value) {
+    if ((*stack)->top < MAX - 1) {
+        (*stack)->arr[++((*stack)->top)] = value;  // Dereference for push
+    }
+}
+
+int pop(struct Stack **stack) {
+    if (!isempty(stack)) {
+        return (*stack)->arr[((*stack)->top)--];  // Correct dereferencing and pop operation
+    }
+    return -1;
+}
+
+int peek(struct Stack *stack) {
+    if (!isempty(&stack)) {
+        return stack->arr[stack->top];  // Dereference to peek the top
+    }
+    return -1;
+}
+
+int isOperator(char c) {
+    return (c == '+' || c == '-' || c == '*' || c == '/');
+}
+
+int precedence(char c) {
+    if (c == '+' || c == '-') {
+        return 1;
+    }
+    if (c == '*' || c == '/') {
+        return 2;
+    }
+    return 0;
+}
+
+void infixtoPostfix(char *exp, char *postfix) {
+    struct Stack *stack;
+    initstack(&stack);  // Stack initialization
+    int k = 0;
+    
+    for (int i = 0; i < strlen(exp); i++) {
+        char current = exp[i];
+
+        if (isalnum(current)) {  // If the current character is an operand, add it to the postfix
+            postfix[k++] = current;
+        } else if (current == '(') {  // Push '(' onto the stack
+            push(&stack, current);
+        } else if (current == ')') {  // Pop until we get a '('
+            while (!isempty(&stack) && peek(stack) != '(') {
+                postfix[k++] = pop(&stack);
+            }
+            pop(&stack);  // Remove '(' from the stack
+        } else if (isOperator(current)) {  // If it's an operator
+            while (!isempty(&stack) && precedence(current) <= precedence(peek(stack))) {
+                postfix[k++] = pop(&stack);  // Pop operators with higher or equal precedence
+            }
+            push(&stack, current);  // Push the current operator to the stack
+        }
+    }
+
+    // Pop all remaining operators from the stack
+    while (!isempty(&stack)) {
+        postfix[k++] = pop(&stack);
+    }
+
+    postfix[k] = '\0';  // Null-terminate the postfix expression
+}
+
+int main() {
+    char infix[MAX], postfix[MAX];  // Declare postfix array
+    printf("Enter the infix expression \n");
+    scanf("%s", infix);
+    
+    infixtoPostfix(infix, postfix);
+    printf("Postfix expression: %s\n", postfix);
+    return 0;
+}
