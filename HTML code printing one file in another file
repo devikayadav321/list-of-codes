@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <title>
+     Nested List
+    </title>
+    <body>
+      <h2> Web development</h2>
+      <ul>
+        <li> Frontend 
+        <ol>
+          <li> HTML</li>
+          <ul>
+            <li> HTML 5 </li>
+          </ul>
+          </li>
+          <li> CSS
+            <ul>
+              <li> CSS 3</li>
+              <li> Boot Strap </li>
+            </ul>
+          </li>    
+    </body>
